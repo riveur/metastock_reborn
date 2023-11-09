@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:metastock_reborn/src/login/login_view.dart';
+import 'package:metastock_reborn/src/product/product_list_view.dart';
 import 'package:metastock_reborn/src/utils/constants.dart';
 
 class MainApp extends StatelessWidget {
@@ -14,7 +15,8 @@ class MainApp extends StatelessWidget {
         return MaterialPageRoute<void>(
             settings: routeSettings,
             builder: (BuildContext context) {
-              return const LoginView();
+              return ProductListView();
+              // return const LoginView();
             });
       },
     );
