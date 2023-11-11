@@ -1,12 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:metastock_reborn/src/components/floating_button.dart';
+import 'package:metastock_reborn/src/components/logout_button.dart';
 import 'package:metastock_reborn/src/models/product.dart';
+import 'package:metastock_reborn/src/product/product_controller.dart';
 import 'package:metastock_reborn/src/product/product_item.dart';
-import 'package:metastock_reborn/src/utils/samples.dart';
 
 class ProductListView extends StatelessWidget {
   ProductListView({super.key});
 
-  final List<Product> products = Samples.getProducts();
+  final productController = Get.put(ProductController());
+  final ScrollController scrollController = ScrollController();
+
+  void searchProduct(String query) {
+    if (query.isEmpty) {
+      productController.resetFilter();
+      return;
+    }
+
+    final target = productController.products.where((product) {
+      var name = product.name.toLowerCase();
+      var description = product.description.toLowerCase();
+      return name.contains(query.toLowerCase()) ||
+          description.contains(query.toLowerCase());
+    }).toList();
+
+    productController.filteredProducts.value = target;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,35 +45,60 @@ class ProductListView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Liste des produits"),
+        actions: const [LogoutButton()],
       ),
       body: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            padding: const EdgeInsets.all(16),
-            child: const SearchBar(
-              padding: MaterialStatePropertyAll<EdgeInsets>(
+            margin: const EdgeInsets.all(16),
+            child: SearchBar(
+              onChanged: searchProduct,
+              padding: const MaterialStatePropertyAll<EdgeInsets>(
                   EdgeInsets.symmetric(horizontal: 16)),
-              leading: Icon(Icons.search),
+              leading: const Icon(Icons.search),
             ),
           ),
           Expanded(
-            child: ListView.separated(
-              itemCount: products.length,
-              itemBuilder: (BuildContext context, int index) {
-                return ProductItem(
-                  product: products.elementAt(index),
-                  onPressed: onClickProduct,
-                );
-              },
-              separatorBuilder: (BuildContext context, int index) =>
-                  const Divider(color: Colors.transparent),
-            ),
+            child: Obx(() {
+              switch (productController.status.value) {
+                case ProductControllerStatus.error:
+                  return const Center(
+                    child: Text('Erreur lors de la récupération des produits'),
+                  );
+                case ProductControllerStatus.fetched:
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      productController.fetchAll();
+                    },
+                    child: ListView.separated(
+                      itemCount: productController.filteredProducts.length,
+                      controller: scrollController,
+                      itemBuilder: (BuildContext context, int index) {
+                        return ProductItem(
+                          product: productController.filteredProducts
+                              .elementAt(index),
+                          onPressed: onClickProduct,
+                        );
+                      },
+                      separatorBuilder: (BuildContext context, int index) =>
+                          const Divider(color: Colors.transparent),
+                    ),
+                  );
+                case ProductControllerStatus.initial:
+                case ProductControllerStatus.loading:
+                default:
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+              }
+            }),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingButton(
         onPressed: onClickAdd,
-        child: const Icon(Icons.add),
+        controller: scrollController,
       ),
     );
   }

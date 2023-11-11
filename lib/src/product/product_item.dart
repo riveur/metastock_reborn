@@ -8,15 +8,24 @@ class ProductItem extends StatelessWidget {
   final Product product;
   final void Function(Product product)? onPressed;
 
+  Color _colorByStockAndThreshold(int stock, int threshold) {
+    if (stock == 0) return Constants.dangerColor;
+    if (stock < threshold) return Constants.warningColor;
+    return Constants.primaryColor;
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: const Icon(
-        Icons.bakery_dining_outlined,
-      ),
+      leading: SizedBox(width: 50, child: Image.network(product.picture)),
       enabled: true,
       title: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Text(product.name),
+        Flexible(
+          child: Text(
+            product.name,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
         Text(
           "${product.unitPrice}€",
           style: const TextStyle(fontWeight: FontWeight.bold),
@@ -30,9 +39,8 @@ class ProductItem extends StatelessWidget {
           style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: product.stock > product.threshold
-                  ? Constants.primaryColor
-                  : Constants.dangerColor),
+              color:
+                  _colorByStockAndThreshold(product.stock, product.threshold)),
         )
       ]),
       onTap: () {
