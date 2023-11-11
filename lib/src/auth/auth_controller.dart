@@ -14,8 +14,6 @@ class AuthController extends GetxController {
     super.onInit();
   }
 
-  static AuthController get find => Get.find<AuthController>();
-
   Future<void> checkAuth() async {
     if (await getToken() != null) {
       isLoggedIn.value = true;

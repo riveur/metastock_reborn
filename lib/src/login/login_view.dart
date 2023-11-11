@@ -5,15 +5,16 @@ import 'package:metastock_reborn/src/auth/auth_controller.dart';
 class LoginView extends StatelessWidget {
   LoginView({super.key});
 
+  final AuthController _authController =
+      Get.find(tag: (AuthController).toString());
+
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    var authController = AuthController.find;
-
     void handleSubmit() {
-      authController
+      _authController
           .login(usernameController.text, passwordController.text)
           .then((status) {
         if (status) {
@@ -64,14 +65,14 @@ class LoginView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Obx(() => FilledButton(
-                        onPressed: authController.isLoading.value
+                        onPressed: _authController.isLoading.value
                             ? null
                             : handleSubmit,
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
                             Opacity(
-                              opacity: authController.isLoading.value ? 1 : 0,
+                              opacity: _authController.isLoading.value ? 1 : 0,
                               child: SizedBox(
                                 height: 20,
                                 width: 20,
@@ -81,7 +82,8 @@ class LoginView extends StatelessWidget {
                               ),
                             ),
                             Opacity(
-                                opacity: authController.isLoading.value ? 0 : 1,
+                                opacity:
+                                    _authController.isLoading.value ? 0 : 1,
                                 child: const Text('Se connecter'))
                           ],
                         ),

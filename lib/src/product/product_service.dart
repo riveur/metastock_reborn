@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
+import 'package:get/get.dart';
 import 'package:metastock_reborn/src/auth/auth_controller.dart';
 import 'package:metastock_reborn/src/models/product.dart';
 import 'package:metastock_reborn/src/utils/api.dart';
 
 class ProductService {
-  final AuthController authController = AuthController.find;
+  final AuthController authController =
+      Get.find(tag: (AuthController).toString());
   final dio = Dio();
 
   Future<List<Product>> findAll() async {

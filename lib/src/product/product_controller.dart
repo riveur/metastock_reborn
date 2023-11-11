@@ -8,12 +8,11 @@ enum ProductControllerStatus { initial, loading, error, fetched }
 
 class ProductController extends GetxController {
   final ProductService productService = ProductService();
-  final AuthController _authController = AuthController.find;
+  final AuthController _authController =
+      Get.find(tag: (AuthController).toString());
   var products = <Product>[].obs;
   var filteredProducts = <Product>[].obs;
   final status = ProductControllerStatus.initial.obs;
-
-  static ProductController get find => Get.find<ProductController>();
 
   @override
   void onInit() {

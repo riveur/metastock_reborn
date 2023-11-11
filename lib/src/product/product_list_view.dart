@@ -6,26 +6,25 @@ import 'package:metastock_reborn/src/models/product.dart';
 import 'package:metastock_reborn/src/product/product_controller.dart';
 import 'package:metastock_reborn/src/product/product_item.dart';
 
-class ProductListView extends StatelessWidget {
+class ProductListView extends GetView<ProductController> {
   ProductListView({super.key});
 
-  final productController = Get.put(ProductController());
   final ScrollController scrollController = ScrollController();
 
   void searchProduct(String query) {
     if (query.isEmpty) {
-      productController.resetFilter();
+      controller.resetFilter();
       return;
     }
 
-    final target = productController.products.where((product) {
+    final target = controller.products.where((product) {
       var name = product.name.toLowerCase();
       var description = product.description.toLowerCase();
       return name.contains(query.toLowerCase()) ||
           description.contains(query.toLowerCase());
     }).toList();
 
-    productController.filteredProducts.value = target;
+    controller.filteredProducts.value = target;
   }
 
   @override
@@ -45,7 +44,7 @@ class ProductListView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Liste des produits"),
-        actions: const [LogoutButton()],
+        actions: [LogoutButton()],
       ),
       body: Column(
         mainAxisSize: MainAxisSize.min,
@@ -61,7 +60,7 @@ class ProductListView extends StatelessWidget {
           ),
           Expanded(
             child: Obx(() {
-              switch (productController.status.value) {
+              switch (controller.status.value) {
                 case ProductControllerStatus.error:
                   return const Center(
                     child: Text('Erreur lors de la récupération des produits'),
@@ -69,15 +68,14 @@ class ProductListView extends StatelessWidget {
                 case ProductControllerStatus.fetched:
                   return RefreshIndicator(
                     onRefresh: () async {
-                      productController.fetchAll();
+                      controller.fetchAll();
                     },
                     child: ListView.separated(
-                      itemCount: productController.filteredProducts.length,
+                      itemCount: controller.filteredProducts.length,
                       controller: scrollController,
                       itemBuilder: (BuildContext context, int index) {
                         return ProductItem(
-                          product: productController.filteredProducts
-                              .elementAt(index),
+                          product: controller.filteredProducts.elementAt(index),
                           onPressed: onClickProduct,
                         );
                       },
