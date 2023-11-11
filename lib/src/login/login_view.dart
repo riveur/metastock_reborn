@@ -1,12 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:metastock_reborn/src/auth/auth_controller.dart';
 
 class LoginView extends StatelessWidget {
-  const LoginView({super.key});
+  LoginView({super.key});
 
-  void handleSubmit() {}
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    var authController = AuthController.find;
+
+    void handleSubmit() {
+      authController
+          .login(usernameController.text, passwordController.text)
+          .then((status) {
+        if (status) {
+          Get.offNamed('/products');
+        } else {
+          Get.showSnackbar(const GetSnackBar(
+            message: 'Identifiants incorrect',
+            duration: Duration(seconds: 3),
+          ));
+        }
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Connexion'),
@@ -22,16 +42,18 @@ class LoginView extends StatelessWidget {
               ),
               const Divider(),
               const SizedBox(height: 10),
-              const TextField(
-                decoration: InputDecoration(
+              TextField(
+                controller: usernameController,
+                decoration: const InputDecoration(
                     labelText: "Nom d'utilisateur",
                     border: OutlineInputBorder(),
                     floatingLabelBehavior: FloatingLabelBehavior.always),
               ),
               const SizedBox(height: 15),
-              const TextField(
+              TextField(
+                controller: passwordController,
                 obscureText: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     labelText: "Mot de passe",
                     border: OutlineInputBorder(),
                     floatingLabelBehavior: FloatingLabelBehavior.always),
@@ -41,10 +63,29 @@ class LoginView extends StatelessWidget {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  FilledButton(
-                    onPressed: handleSubmit,
-                    child: const Text("Se connecter"),
-                  )
+                  Obx(() => FilledButton(
+                        onPressed: authController.isLoading.value
+                            ? null
+                            : handleSubmit,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Opacity(
+                              opacity: authController.isLoading.value ? 1 : 0,
+                              child: SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  color: Theme.of(context).disabledColor,
+                                ),
+                              ),
+                            ),
+                            Opacity(
+                                opacity: authController.isLoading.value ? 0 : 1,
+                                child: const Text('Se connecter'))
+                          ],
+                        ),
+                      ))
                 ],
               )
             ],
