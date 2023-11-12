@@ -36,6 +36,16 @@ class Product {
         archive: json["archive"],
       );
 
+  factory Product.empty() => Product(
+      id: -1,
+      name: "",
+      description: "...",
+      unitPrice: -1,
+      stock: -1,
+      threshold: -1,
+      picture: "...",
+      archive: false);
+
   Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,

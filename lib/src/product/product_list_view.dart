@@ -30,9 +30,7 @@ class ProductListView extends GetView<ProductController> {
   @override
   Widget build(BuildContext context) {
     void onClickProduct(Product product) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text("Produit clické: ${product.name}"),
-      ));
+      Get.toNamed('/products/${product.id}');
     }
 
     void onClickAdd() {

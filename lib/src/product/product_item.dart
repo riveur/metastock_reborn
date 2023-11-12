@@ -8,7 +8,7 @@ class ProductItem extends StatelessWidget {
   final Product product;
   final void Function(Product product)? onPressed;
 
-  Color _colorByStockAndThreshold(int stock, int threshold) {
+  static Color colorByStockAndThreshold(int stock, int threshold) {
     if (stock == 0) return Constants.dangerColor;
     if (stock < threshold) return Constants.warningColor;
     return Constants.primaryColor;
@@ -40,7 +40,7 @@ class ProductItem extends StatelessWidget {
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color:
-                  _colorByStockAndThreshold(product.stock, product.threshold)),
+                  colorByStockAndThreshold(product.stock, product.threshold)),
         )
       ]),
       onTap: () {

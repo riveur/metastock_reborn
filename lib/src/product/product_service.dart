@@ -18,4 +18,13 @@ class ProductService {
     return response.data?.map((value) => Product.fromJson(value)).toList() ??
         [];
   }
+
+  Future<Product> find(String id) async {
+    String? token = await authController.getToken();
+
+    var response = await dio.get<dynamic>(Api.endpoint('/products/$id'),
+        options: Options(headers: {"Authorization": "Bearer $token"}));
+
+    return Product.fromJson(response.data);
+  }
 }
