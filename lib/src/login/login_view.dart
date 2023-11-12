@@ -58,6 +58,9 @@ class LoginView extends StatelessWidget {
                     labelText: "Mot de passe",
                     border: OutlineInputBorder(),
                     floatingLabelBehavior: FloatingLabelBehavior.always),
+                onSubmitted: (value) {
+                  handleSubmit();
+                },
               ),
               const SizedBox(height: 10),
               Row(
