@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:metastock_reborn/src/models/product.dart';
+import 'package:metastock_reborn/src/movement/movement_item.dart';
+import 'package:metastock_reborn/src/movement/movement_list_controller.dart';
 import 'package:metastock_reborn/src/product/product_details_controller.dart';
 import 'package:metastock_reborn/src/product/product_item.dart';
 import 'package:metastock_reborn/src/utils/constants.dart';
 
 class ProductDetailsView extends GetView<ProductDetailsController> {
-  const ProductDetailsView({super.key});
+  ProductDetailsView({super.key});
+
+  final MovementListController _movementListController =
+      Get.find(tag: (MovementListController).toString());
 
   @override
   Widget build(BuildContext context) {
@@ -32,28 +37,44 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
 
   Widget _finalView() {
     var product = controller.product.value;
-    return Column(children: [
-      Image.network(
-        product.picture,
-        height: 200,
-      ),
-      Container(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildInfos(product),
-            const SizedBox(height: 20),
-            _buildStock(product),
-            const SizedBox(height: 20),
-            _buildThreshold(product),
-            const SizedBox(height: 20),
-            _buildArchive(product),
-            const SizedBox(height: 40),
-          ],
+    return Column(
+      children: [
+        Expanded(
+          child: ListView(
+            shrinkWrap: true,
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.network(
+                    product.picture,
+                    height: 200,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildInfos(product),
+                        const SizedBox(height: 20),
+                        _buildStock(product),
+                        const SizedBox(height: 20),
+                        _buildThreshold(product),
+                        const SizedBox(height: 20),
+                        _buildArchive(product),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  _buildMovements()
+                ],
+              ),
+            ],
+          ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 
   Widget _buildInfos(Product product) {
@@ -148,6 +169,43 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
               fontWeight: FontWeight.bold,
               color: product.archive ? Constants.warningColor : null),
         ),
+      ],
+    );
+  }
+
+  Widget _buildMovements() {
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                "Mouvements",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              OutlinedButton(onPressed: () {}, child: const Text("Nouveau"))
+            ],
+          ),
+        ),
+        _movementListController.movements.isEmpty
+            ? Container(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: const Text("Pas de mouvements pour ce produit"),
+              )
+            : ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  var movement =
+                      _movementListController.movements.elementAt(index);
+                  return MovementItem(movement: movement);
+                },
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 10),
+                itemCount: _movementListController.movements.length,
+              )
       ],
     );
   }

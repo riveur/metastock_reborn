@@ -24,7 +24,7 @@ class MainApp extends StatelessWidget {
     ),
     GetPage(
       name: '/products/:id',
-      page: () => const ProductDetailsView(),
+      page: () => ProductDetailsView(),
       binding: ProductDetailsBinding(),
     ),
   ];
