@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:metastock_reborn/src/models/product.dart';
 import 'package:metastock_reborn/src/movement/movement_item.dart';
 import 'package:metastock_reborn/src/movement/movement_list_controller.dart';
+import 'package:metastock_reborn/src/product/product_controller.dart';
 import 'package:metastock_reborn/src/product/product_details_controller.dart';
 import 'package:metastock_reborn/src/product/product_item.dart';
 import 'package:metastock_reborn/src/utils/constants.dart';
@@ -12,11 +13,27 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
 
   final MovementListController _movementListController =
       Get.find(tag: (MovementListController).toString());
+  final ProductController _productController = Get.find<ProductController>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("Product details")),
+        appBar: AppBar(
+          title: const Text("Détail du produit"),
+          actions: [
+            IconButton(
+                onPressed: () async {
+                  var result = await Get.toNamed('/product/edit',
+                      arguments: controller.product.value);
+
+                  if (result == 'success') {
+                    controller.loadProduct();
+                    _productController.fetchAll();
+                  }
+                },
+                icon: const Icon(Icons.edit)),
+          ],
+        ),
         body: Obx(() {
           switch (controller.status.value) {
             case ProductDetailsControllerStatus.fetched:

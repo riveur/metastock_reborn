@@ -11,15 +11,14 @@ class ProductDetailsController extends GetxController {
   final AuthController _authController =
       Get.find(tag: (AuthController).toString());
 
+  final _productId = "".obs;
   final product = Product.empty().obs;
   final status = ProductDetailsControllerStatus.initial.obs;
 
   @override
   void onInit() async {
-    var productId = Get.parameters['id'];
-    if (productId != null) {
-      await findById(productId);
-    }
+    _productId.value = Get.parameters['id']!;
+    await loadProduct();
     super.onInit();
   }
 
@@ -33,6 +32,12 @@ class ProductDetailsController extends GetxController {
         await _authController.logout();
       }
       status.value = ProductDetailsControllerStatus.error;
+    }
+  }
+
+  Future<void> loadProduct() async {
+    if (_productId.isNotEmpty) {
+      await findById(_productId.value);
     }
   }
 }

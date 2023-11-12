@@ -3,8 +3,10 @@ import 'package:get/get.dart';
 import 'package:metastock_reborn/src/auth/auth_binding.dart';
 import 'package:metastock_reborn/src/login/login_view.dart';
 import 'package:metastock_reborn/src/product/bindings/product_details_binding.dart';
+import 'package:metastock_reborn/src/product/bindings/product_edit_binding.dart';
 import 'package:metastock_reborn/src/product/bindings/product_list_binding.dart';
 import 'package:metastock_reborn/src/product/product_details_view.dart';
+import 'package:metastock_reborn/src/product/product_edit_view.dart';
 import 'package:metastock_reborn/src/product/product_list_view.dart';
 import 'package:metastock_reborn/src/utils/constants.dart';
 
@@ -27,6 +29,11 @@ class MainApp extends StatelessWidget {
       page: () => ProductDetailsView(),
       binding: ProductDetailsBinding(),
     ),
+    GetPage(
+      name: '/product/edit',
+      page: () => const ProductEditView(),
+      binding: ProductEditBinding(),
+    )
   ];
 
   @override

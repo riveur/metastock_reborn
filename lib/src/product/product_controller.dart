@@ -15,13 +15,13 @@ class ProductController extends GetxController {
   final status = ProductControllerStatus.initial.obs;
 
   @override
-  void onInit() {
-    fetchAll();
+  void onInit() async {
+    await fetchAll();
     filteredProducts.value = products;
     super.onInit();
   }
 
-  void fetchAll() async {
+  Future<void> fetchAll() async {
     try {
       status.value = ProductControllerStatus.loading;
       var result = await productService.findAll();

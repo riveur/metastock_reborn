@@ -33,10 +33,12 @@ class ProductListView extends GetView<ProductController> {
       Get.toNamed('/products/${product.id}');
     }
 
-    void onClickAdd() {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Ajout d'un produit"),
-      ));
+    void onClickAdd() async {
+      var result = await Get.toNamed('/product/edit');
+
+      if (result == 'success') {
+        controller.fetchAll();
+      }
     }
 
     return Scaffold(

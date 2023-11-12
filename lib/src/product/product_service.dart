@@ -27,4 +27,37 @@ class ProductService {
 
     return Product.fromJson(response.data);
   }
+
+  Future<Product> create(Product product) async {
+    String? token = await authController.getToken();
+
+    Map<String, dynamic> values = product.toJson();
+    values.remove("id");
+
+    var response = await dio.post<dynamic>(
+      Api.endpoint('/products'),
+      options: Options(headers: {
+        "Authorization": "Bearer $token",
+        "Content-Type": "application/json",
+      }),
+      data: values,
+    );
+
+    return Product.fromJson(response.data);
+  }
+
+  Future<Product> edit(Product product) async {
+    String? token = await authController.getToken();
+
+    var response = await dio.put<dynamic>(
+      Api.endpoint('/products/${product.id}'),
+      options: Options(headers: {
+        "Authorization": "Bearer $token",
+        "Content-Type": "application/json",
+      }),
+      data: product.toJson(),
+    );
+
+    return Product.fromJson(response.data);
+  }
 }
