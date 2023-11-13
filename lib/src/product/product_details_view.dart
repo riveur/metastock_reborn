@@ -158,10 +158,10 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
         ),
         Text(
           "Seuil d'alerte: ${product.threshold}",
-          style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: product.archive ? Constants.warningColor : null),
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ],
     );

@@ -16,7 +16,7 @@ class ProductEditView extends GetView<ProductEditController> {
           Container(
               padding: const EdgeInsets.only(right: 8),
               child: Obx(
-                () => FilledButton(
+                () => FilledButton.tonal(
                   onPressed: () async {
                     if (await controller.saveProduct()) {
                       Get.back(result: 'success');
