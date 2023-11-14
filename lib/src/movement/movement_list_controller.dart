@@ -13,13 +13,12 @@ class MovementListController extends GetxController {
   var movements = <Movement>[].obs;
   var filteredMovements = <Movement>[].obs;
   final status = MovementListControllerStatus.initial.obs;
+  final _productId = "".obs;
 
   @override
-  void onInit() {
-    var productId = Get.parameters['id'];
-    if (productId != null) {
-      fetchAllByProduct(productId);
-    }
+  void onInit() async {
+    _productId.value = Get.parameters['id'] as String;
+    await loadMovements();
     filteredMovements.value = movements;
     super.onInit();
   }
@@ -35,6 +34,12 @@ class MovementListController extends GetxController {
         await _authController.logout();
       }
       status.value = MovementListControllerStatus.error;
+    }
+  }
+
+  Future<void> loadMovements() async {
+    if (_productId.isNotEmpty) {
+      fetchAllByProduct(_productId.value);
     }
   }
 

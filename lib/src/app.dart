@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:metastock_reborn/src/auth/auth_binding.dart';
 import 'package:metastock_reborn/src/login/login_view.dart';
+import 'package:metastock_reborn/src/movement/movement_add_binding.dart';
+import 'package:metastock_reborn/src/movement/movement_add_view.dart';
 import 'package:metastock_reborn/src/product/bindings/product_details_binding.dart';
 import 'package:metastock_reborn/src/product/bindings/product_edit_binding.dart';
 import 'package:metastock_reborn/src/product/bindings/product_list_binding.dart';
@@ -33,7 +35,12 @@ class MainApp extends StatelessWidget {
       name: '/product/edit',
       page: () => const ProductEditView(),
       binding: ProductEditBinding(),
-    )
+    ),
+    GetPage(
+      name: '/movement/add',
+      page: () => const MovementAddView(),
+      binding: MovementAddBinding(),
+    ),
   ];
 
   @override

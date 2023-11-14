@@ -202,7 +202,16 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                 "Mouvements",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              OutlinedButton(onPressed: () {}, child: const Text("Nouveau"))
+              OutlinedButton(
+                  onPressed: () async {
+                    var result = await Get.toNamed('/movement/add');
+
+                    if (result == 'success') {
+                      _movementListController.loadMovements();
+                      controller.loadProduct();
+                    }
+                  },
+                  child: const Text("Nouveau"))
             ],
           ),
         ),

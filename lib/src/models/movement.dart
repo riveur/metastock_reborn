@@ -6,6 +6,8 @@ Movement movementFromJson(String str) => Movement.fromJson(json.decode(str));
 
 String movementToJson(Movement data) => json.encode(data.toJson());
 
+enum MovementType { entry, exit }
+
 class Movement {
   int id;
   int quantity;
